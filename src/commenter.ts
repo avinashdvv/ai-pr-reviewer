@@ -52,7 +52,7 @@ export class Commenter {
    * @param mode Can be "create", "replace". Default is "replace".
    */
   async comment(message: string, tag: string, mode: string) {
-    const target = extractPullRequestNumber(context.payload.issue.html_url);
+    const target = extractPullRequestNumber(context.payload.issue.html_url)
 
     if (!tag) {
       tag = COMMENT_TAG
@@ -727,7 +727,9 @@ ${chain}
     let commits
     if (context && context.payload && context.payload.pull_request != null) {
       do {
-        const pullNumber = extractPullRequestNumber(context.payload.issue.html_url)
+        const pullNumber = extractPullRequestNumber(
+          context.payload.issue.html_url
+        )
         commits = await octokit.pulls.listCommits({
           owner: repo.owner,
           repo: repo.repo,
