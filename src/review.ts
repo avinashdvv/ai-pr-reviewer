@@ -25,8 +25,8 @@ const repo = context.repo
 const ignoreKeyword = '@razorgenius: ignore'
 
 const extractPullRequestNumber = (url: string) => {
-  const parts = url.split('/');  // Split the URL by '/'
-  return parts[parts.length - 1];  // The pull request number is the last part of the URL
+  const parts = url.split('/') // Split the URL by '/'
+  return parts[parts.length - 1] // The pull request number is the last part of the URL
 }
 
 export const codeReview = async (
@@ -40,20 +40,21 @@ export const codeReview = async (
   const openaiConcurrencyLimit = pLimit(options.openaiConcurrencyLimit)
   const githubConcurrencyLimit = pLimit(options.githubConcurrencyLimit)
 
-  const pullNumber = extractPullRequestNumber(context.payload.issue.html_url);
-  const pr = await octokit.pulls.get({
+  const pullNumber = extractPullRequestNumber(context.payload.issue.html_url)
+  const pullRequestDetails = await octokit.pulls.get({
     owner: repo.owner,
     repo: repo.repo,
     // eslint-disable-next-line camelcase
     pull_number: pullNumber
   })
 
+  // eslint-disable-next-line no-console
+  console.log(pullRequestDetails)
+
   const inputs: Inputs = new Inputs()
   inputs.title = context.payload.issue.title
   if (context.payload.issue.body != null) {
-    inputs.description = commenter.getDescription(
-      context.payload.issue.body
-    )
+    inputs.description = commenter.getDescription(context.payload.issue.body)
   }
 
   // if the description contains ignore_keyword, skip
