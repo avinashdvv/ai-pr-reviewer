@@ -2,6 +2,7 @@ import {getInput, info, warning} from '@actions/core'
 // eslint-disable-next-line camelcase
 import {context as github_context} from '@actions/github'
 import {octokit} from './octokit'
+import {extractPullRequestNumber} from './utils'
 
 // eslint-disable-next-line camelcase
 const context = github_context
@@ -51,17 +52,7 @@ export class Commenter {
    * @param mode Can be "create", "replace". Default is "replace".
    */
   async comment(message: string, tag: string, mode: string) {
-    let target: number
-    if (context.payload.pull_request != null) {
-      target = context.payload.pull_request.number
-    } else if (context.payload.issue != null) {
-      target = context.payload.issue.number
-    } else {
-      warning(
-        'Skipped: context.payload.pull_request and context.payload.issue are both null'
-      )
-      return
-    }
+    const target = extractPullRequestNumber(context.payload.issue.html_url);
 
     if (!tag) {
       tag = COMMENT_TAG
@@ -736,11 +727,12 @@ ${chain}
     let commits
     if (context && context.payload && context.payload.pull_request != null) {
       do {
+        const pullNumber = extractPullRequestNumber(context.payload.issue.html_url)
         commits = await octokit.pulls.listCommits({
           owner: repo.owner,
           repo: repo.repo,
           // eslint-disable-next-line camelcase
-          pull_number: context.payload.pull_request.number,
+          pull_number: pullNumber,
           // eslint-disable-next-line camelcase
           per_page: 100,
           page
