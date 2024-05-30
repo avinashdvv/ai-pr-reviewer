@@ -19,6 +19,10 @@ concurrency:
     'pull_request_review_comment' && 'pr_comment' || 'pr' }}
   cancel-in-progress: ${{ github.event_name != 'pull_request_review_comment' }}
 
+env:
+  GITHUB_TOKEN: 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
+  OPENAI_CODEREVIEW_SECRET: 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
+
 jobs:
   review:
     runs-on: ubuntu-latest
@@ -30,8 +34,8 @@ jobs:
           submodules: false
       - uses: ./
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ env.OPENAI_API_KEY }}
         with:
           debug: true
           review_comment_lgtm: false
