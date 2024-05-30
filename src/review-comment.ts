@@ -13,6 +13,7 @@ import {octokit} from './octokit'
 import {type Options} from './options'
 import {type Prompts} from './prompts'
 import {getTokenCount} from './tokenizer'
+import {extractPullRequestNumber} from './utils'
 
 // eslint-disable-next-line camelcase
 const context = github_context
@@ -69,7 +70,7 @@ export const handleReviewComment = async (
     !comment.body.includes(COMMENT_TAG) &&
     !comment.body.includes(COMMENT_REPLY_TAG)
   ) {
-    const pullNumber = context.payload.pull_request.number
+    const pullNumber = extractPullRequestNumber(context.payload.issue.html_url)
 
     inputs.comment = `${comment.user.login}: ${comment.body}`
     inputs.diff = comment.diff_hunk

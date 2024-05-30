@@ -17,17 +17,13 @@ import {octokit} from './octokit'
 import {type Options} from './options'
 import {type Prompts} from './prompts'
 import {getTokenCount} from './tokenizer'
+import {extractPullRequestNumber} from './utils'
 
 // eslint-disable-next-line camelcase
 const context = github_context
 const repo = context.repo
 
 const ignoreKeyword = '@razorgenius: ignore'
-
-const extractPullRequestNumber = (url: string) => {
-  const parts = url.split('/') // Split the URL by '/'
-  return parts[parts.length - 1] // The pull request number is the last part of the URL
-}
 
 export const codeReview = async (
   lightBot: Bot,
@@ -69,7 +65,7 @@ export const codeReview = async (
   // get SUMMARIZE_TAG message
   const existingSummarizeCmt = await commenter.findCommentWithTag(
     SUMMARIZE_TAG,
-    context.payload.pull_request.number
+    pullNumber
   )
   let existingCommitIdsBlock = ''
   let existingSummarizeCmtBody = ''
@@ -433,10 +429,7 @@ ${filename}: ${summary}
       let message = '### Summary by CodeRabbit\n\n'
       message += releaseNotesResponse
       try {
-        await commenter.updateDescription(
-          context.payload.pull_request.number,
-          message
-        )
+        await commenter.updateDescription(pullNumber, message)
       } catch (e: any) {
         warning(`release notes: error from github: ${e.message as string}`)
       }
@@ -561,7 +554,7 @@ ${
         let commentChain = ''
         try {
           const allChains = await commenter.getCommentChainsWithinRange(
-            context.payload.pull_request.number,
+            pullNumber,
             filename,
             startLine,
             endLine,
@@ -727,7 +720,7 @@ ${
 
     // post the review
     await commenter.submitReview(
-      context.payload.pull_request.number,
+      pullNumber,
       commits[commits.length - 1].sha,
       statusMsg
     )
