@@ -39,9 +39,7 @@ export const codeReview = async (
     owner: repo.owner,
     repo: repo.repo,
     // eslint-disable-next-line camelcase
-    pull_number: context.payload.pull_request.number,
-    // eslint-disable-next-line camelcase
-    per_page: 100
+    pull_number: context.payload.pull_request.number
   })
   console.log(_commits)
 
