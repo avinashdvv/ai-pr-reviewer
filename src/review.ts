@@ -33,6 +33,16 @@ export const codeReview = async (
 ): Promise<void> => {
   const commenter: Commenter = new Commenter()
 
+  const _commits = await octokit.pulls.listCommits({
+    owner: repo.owner,
+    repo: repo.repo,
+    // eslint-disable-next-line camelcase
+    pull_number: context.payload.pull_request.number,
+    // eslint-disable-next-line camelcase
+    per_page: 100
+  })
+  console.log(_commits)
+
   const openaiConcurrencyLimit = pLimit(options.openaiConcurrencyLimit)
   const githubConcurrencyLimit = pLimit(options.githubConcurrencyLimit)
 
