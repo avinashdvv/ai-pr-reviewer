@@ -725,25 +725,23 @@ ${chain}
     const allCommits = []
     let page = 1
     let commits
-    if (context && context.payload && context.payload.pull_request != null) {
-      do {
-        const pullNumber = extractPullRequestNumber(
-          context.payload.issue.html_url
-        )
-        commits = await octokit.pulls.listCommits({
-          owner: repo.owner,
-          repo: repo.repo,
-          // eslint-disable-next-line camelcase
-          pull_number: pullNumber,
-          // eslint-disable-next-line camelcase
-          per_page: 100,
-          page
-        })
+    do {
+      const pullNumber = extractPullRequestNumber(
+        context.payload.issue.html_url
+      )
+      commits = await octokit.pulls.listCommits({
+        owner: repo.owner,
+        repo: repo.repo,
+        // eslint-disable-next-line camelcase
+        pull_number: pullNumber,
+        // eslint-disable-next-line camelcase
+        per_page: 100,
+        page
+      })
 
-        allCommits.push(...commits.data.map(commit => commit.sha))
-        page++
-      } while (commits.data.length > 0)
-    }
+      allCommits.push(...commits.data.map(commit => commit.sha))
+      page++
+    } while (commits.data.length > 0)
 
     return allCommits
   }
