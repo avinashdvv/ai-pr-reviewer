@@ -738,7 +738,7 @@ ${chain}
         per_page: 100,
         page
       })
-      console.log(commits, pullNumber, repo);
+      console.log(commits, pullNumber, repo)
 
       allCommits.push(...commits.data.map(commit => commit.sha))
       page++
