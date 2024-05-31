@@ -33,6 +33,8 @@ export const codeReview = async (
 ): Promise<void> => {
   const commenter: Commenter = new Commenter()
 
+  console.log(context)
+
   const _commits = await octokit.rest.pulls.listCommits({
     owner: repo.owner,
     repo: repo.repo,
