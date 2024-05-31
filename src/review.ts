@@ -44,7 +44,6 @@ export const codeReview = async (
     pull_number: pullNumber
   })
 
-  // eslint-disable-next-line no-console
   console.log(pullRequestDetails)
 
   const inputs: Inputs = new Inputs()
